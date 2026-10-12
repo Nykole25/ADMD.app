@@ -1,121 +1,132 @@
 import 'package:flutter/material.dart';
+import 'models/user.dart';
+import 'models/bank_account.dart';
+import 'models/book.dart';
+import 'models/magazine.dart';
+import 'models/library.dart';
+
+// Datele sunt create aici, în afara widgetului, ca să fie simplu de citit.
+List<User> users = [];
+List<BankAccount> accounts = [];
+Library library = Library();
+
+// Creăm toate obiectele și le punem în liste.
+void setupData() {
+  // Task I: trei useri cu combinații diferite de null
+  users.add(User(name: 'Andra', age: 24, email: 'andra.n@mail.com'));
+  users.add(User(name: 'Radu', age: 19));
+  users.add(User(name: 'Elena')); // age și email sunt null
+
+  // Task II: trei conturi
+  BankAccount acc1 = BankAccount(
+    holderName: 'Andra',
+    balance: 1200.75,
+    bankBranch: 'Cluj-Napoca',
+  );
+  acc1.initializeAccount('RO44 BANK 1001');
+
+  BankAccount acc2 = BankAccount(holderName: 'Radu', balance: 85.0);
+  acc2.initializeAccount('RO55 BANK 2002');
+
+  BankAccount acc3 = BankAccount(holderName: 'Elena'); // neinițializat
+
+  accounts.add(acc1);
+  accounts.add(acc2);
+  accounts.add(acc3);
+
+  // Task III: o carte și o revistă
+  Book book = Book(
+    title: 'The Silent Garden',
+    author: 'Maria Popescu',
+    publishDate: DateTime(2026, 3, 1),
+    pageCount: 280,
+    isbn: '978-973-111',
+  );
+  Magazine magazine = Magazine(title: 'Cooking Weekly', issueNumber: 7);
+
+  library.addItem(book);
+  library.addItem(magazine);
+
+  // Andra împrumută cartea
+  library.borrowItem(book, users[0], DateTime.now().add(Duration(days: 14)));
+
+  // Demonstrații pentru prezentare (apar în terminal)
+  print(library.borrowItem(book, users[1], DateTime.now())); // false, deja împrumutată
+  print(library.searchByTitle(null)); // [] listă goală
+  print(library.searchByTitle('garden').length); // 1
+  print(library.getItemsByAuthor('maria popescu').length); // 1
+  print(library.getRecentItems().length); // 1
+}
 
 void main() {
-  runApp(const MyApp());
+  setupData();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lab I - Nicole',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Lab 1 - Nicole'),
+      title: 'Lab 2 - Andra',
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+class HomePage extends StatelessWidget {
+  // Titlu de secțiune, cu spațiu în jur
+  Widget sectionTitle(String text) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 20, 16, 8),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    // Construim o singură listă cu toate rândurile, una după alta.
+    List<Widget> rows = [];
+
+    // ---------- USERS ----------
+    rows.add(sectionTitle('Users'));
+    for (var u in users) {
+      rows.add(ListTile(
+        title: Text(u.name),
+        subtitle: Text(u.getDisplayAge() + ' - ' + u.getDisplayEmail()),
+      ));
+    }
+
+    // ---------- BANK ACCOUNTS ----------
+    rows.add(sectionTitle('Bank accounts'));
+    for (var a in accounts) {
+      rows.add(ListTile(
+        title: Text(a.holderName),
+        subtitle: Text(
+          a.getDisplayNumber() + ' - ' + (a.bankBranch ?? 'N/A'),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      ));
+    }
+
+    // ---------- LIBRARY ----------
+    rows.add(sectionTitle('Library'));
+    for (var item in library.items) {
+      rows.add(ListTile(
+        title: Text(item.title),
+        subtitle: Text(item.describe()),
+      ));
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Lab 2 - Andra')),
+      // Un singur ListView.builder pentru toată pagina
+      body: ListView.builder(
+        itemCount: rows.length,
+        itemBuilder: (context, i) {
+          return rows[i];
+        },
       ),
     );
   }
