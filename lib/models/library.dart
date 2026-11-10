@@ -6,7 +6,6 @@ class Library {
 
   List<LibraryItem> get items => _items;
 
-  // Adaugă doar dacă itemul există și are titlu
   bool addItem(LibraryItem? item) {
     if (item == null) return false;
     if (item.title.isEmpty) return false;
@@ -14,7 +13,6 @@ class Library {
     return true;
   }
 
-  // Dacă query e null sau gol, întoarce listă goală
   List<LibraryItem> searchByTitle(String? query) {
     List<LibraryItem> result = [];
     if (query == null || query.isEmpty) return result;
@@ -40,7 +38,6 @@ class Library {
     return result;
   }
 
-  // Itemele publicate în ultimul an
   List<LibraryItem> getRecentItems() {
     List<LibraryItem> result = [];
     DateTime limit = DateTime.now().subtract(Duration(days: 365));
@@ -55,7 +52,7 @@ class Library {
 
   bool borrowItem(LibraryItem? item, User? user, DateTime? dueDate) {
     if (item == null || user == null || dueDate == null) return false;
-    if (item.borrower != null) return false; // deja împrumutat
+    if (item.borrower != null) return false;
     item.borrower = user;
     item.dueDate = dueDate;
     return true;

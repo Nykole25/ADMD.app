@@ -9,7 +9,6 @@ abstract class LibraryItem {
 
   LibraryItem({required this.title, this.author, this.publishDate});
 
-  // Fiecare subclasă își scrie propria descriere
   String describe();
 
   String getAuthor() {

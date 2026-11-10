@@ -5,11 +5,7 @@ class BankAccount {
   final String? bankBranch;
   bool _initialized = false;
 
-  BankAccount({
-    required this.holderName,
-    this.balance = 0.0,
-    this.bankBranch,
-  });
+  BankAccount({required this.holderName, this.balance = 0.0, this.bankBranch});
 
   void initializeAccount(String number) {
     accountNumber = number;
